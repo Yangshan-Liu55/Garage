@@ -1,0 +1,14 @@
+/Users/shan/Documents/Net_Project/Garage/Garage/obj/Debug/net10.0/Garage.GeneratedMSBuildEditorConfig.editorconfig
+/Users/shan/Documents/Net_Project/Garage/Garage/obj/Debug/net10.0/Garage.AssemblyInfoInputs.cache
+/Users/shan/Documents/Net_Project/Garage/Garage/obj/Debug/net10.0/Garage.AssemblyInfo.cs
+/Users/shan/Documents/Net_Project/Garage/Garage/obj/Debug/net10.0/Garage.csproj.CoreCompileInputs.cache
+/Users/shan/Documents/Net_Project/Garage/Garage/bin/Debug/net10.0/Garage
+/Users/shan/Documents/Net_Project/Garage/Garage/bin/Debug/net10.0/Garage.deps.json
+/Users/shan/Documents/Net_Project/Garage/Garage/bin/Debug/net10.0/Garage.runtimeconfig.json
+/Users/shan/Documents/Net_Project/Garage/Garage/bin/Debug/net10.0/Garage.dll
+/Users/shan/Documents/Net_Project/Garage/Garage/bin/Debug/net10.0/Garage.pdb
+/Users/shan/Documents/Net_Project/Garage/Garage/obj/Debug/net10.0/Garage.dll
+/Users/shan/Documents/Net_Project/Garage/Garage/obj/Debug/net10.0/refint/Garage.dll
+/Users/shan/Documents/Net_Project/Garage/Garage/obj/Debug/net10.0/Garage.pdb
+/Users/shan/Documents/Net_Project/Garage/Garage/obj/Debug/net10.0/Garage.genruntimeconfig.cache
+/Users/shan/Documents/Net_Project/Garage/Garage/obj/Debug/net10.0/ref/Garage.dll
