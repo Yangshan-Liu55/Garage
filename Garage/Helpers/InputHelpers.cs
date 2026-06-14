@@ -84,7 +84,7 @@ public static class InputHelpers
 
     public static string GetRandomColor()
     {
-        String[] colors = {"red", "black", "white", "blue"};
+        String[] colors = { "red", "black", "white", "blue" };
         int x = _rand.Next(colors.Length);
 
         return colors[x];
@@ -92,7 +92,7 @@ public static class InputHelpers
 
     public static FuelType GetRandomFuelType()
     {
-        FuelType[] types = {FuelType.Gasoline, FuelType.Diesel};
+        FuelType[] types = { FuelType.Gasoline, FuelType.Diesel };
         int x = _rand.Next(2);
 
         return types[x];

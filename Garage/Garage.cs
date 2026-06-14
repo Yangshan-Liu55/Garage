@@ -36,8 +36,8 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
             {
                 if (_vehicles[i] == null)
                 {
-                    _vehicles[i] = vehicle;
                     _regNumberIndex.Add(vehicle.RegistrationNumber, i);
+                    _vehicles[i] = vehicle;
                     _count++;
 
                     return true;
@@ -53,20 +53,25 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
 
     public bool IsRegNumberContained(string regNumber)
     {
-        return _regNumberIndex.ContainsKey(regNumber);
+        return _regNumberIndex.ContainsKey(regNumber.ToUpper());
     }
 
     public bool Retrieve(string regNumber)
     {
         try
         {
-            int index = _regNumberIndex[regNumber];
+            regNumber = regNumber.ToUpper();
 
-            _vehicles[index] = null;
-            _regNumberIndex.Remove(regNumber);
-            _count--;
+            if (_regNumberIndex.TryGetValue(regNumber, out int index))
+            {
+                _vehicles[index] = null;
+                _regNumberIndex.Remove(regNumber);
+                _count--;
 
-            return true;
+                return true;
+            }
+
+            return false;
         }
         catch
         {
@@ -78,9 +83,14 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
     {
         try
         {
-            int index = _regNumberIndex[regNumber];
+            regNumber = regNumber.ToUpper();
 
-            return _vehicles[index];
+            if (_regNumberIndex.TryGetValue(regNumber, out int index))
+            {
+                return _vehicles[index];
+            }
+
+            return null;
         }
         catch
         {

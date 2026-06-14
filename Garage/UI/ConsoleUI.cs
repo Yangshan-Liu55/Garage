@@ -127,15 +127,14 @@ internal class ConsoleUI : IConsoleUI
         {
             PrintMenu(MenuConstants.AddVehicleTitle, MenuConstants.AddVehicleItems);
 
-            Console.Write("Choose: ");
-            string choice = InputHelpers.ReadLine;
+            string choice = InputHelpers.ReadString("Choose: ");
             back = HandleAddVehicleMenu(choice);
         } while (!back);
     }
 
     private bool HandleAddVehicleMenu(string choice)
     {
-        bool success;
+        bool success = false;
 
         if (int.TryParse(choice, out int result)
             && Enum.IsDefined(typeof(VehicleType), result))
@@ -143,7 +142,7 @@ internal class ConsoleUI : IConsoleUI
             VehicleType vehicleType = (VehicleType)result;
             string regNumber = ReadRegNumber();
             string color = InputHelpers.ReadString("Color: ").ToLower();
-            
+
             switch (vehicleType)
             {
                 case VehicleType.Car:
@@ -152,17 +151,43 @@ internal class ConsoleUI : IConsoleUI
                     Car car = new Car(regNumber, color, 4, fuelType);
 
                     success = _garageHandler.AddVehicle(car);
-                    Console.WriteLine();
-                    Console.WriteLine(success
-                        ? "Car is successfully parked."
-                        : "Failed to park the car. Please try again.");
+
                     break;
                 case VehicleType.Motorcycle:
+                    int cylinderVolum = InputHelpers.ReadInt("Enter cylinder volumn: ");
+
+                    Motorcycle motorcycle = new Motorcycle(regNumber, color, 2, cylinderVolum);
+
+                    success = _garageHandler.AddVehicle(motorcycle);
+
+                    break;
+                case VehicleType.Bus:
+                    int numberOfSeats = InputHelpers.ReadInt("Enter number of seats: ");
+
+                    Bus bus = new Bus(regNumber, color, 4, numberOfSeats);
+
+                    success = _garageHandler.AddVehicle(bus);
+
+                    break;
+                case VehicleType.Boat:
+                    double length = InputHelpers.ReadInt("Enter length: ");
+
+                    Boat boat = new Boat(regNumber, color, 0, length);
+
+                    success = _garageHandler.AddVehicle(boat);
+
+                    break;
+                case VehicleType.Airplane:
+                    int numberOfEngines = InputHelpers.ReadInt("Enter number of engines: ");
+
+                    Airplane airplane = new Airplane(regNumber, color, 4, numberOfEngines);
+
+                    success = _garageHandler.AddVehicle(airplane);
 
                     break;
                 default:
-                    InvalidChoice();
-                    HandleAddVehicleMenu(InputHelpers.ReadLine);
+                    success = false;
+
                     break;
             }
         }
@@ -173,9 +198,14 @@ internal class ConsoleUI : IConsoleUI
         else
         {
             InvalidChoice();
-            HandleAddVehicleMenu(InputHelpers.ReadLine);
         }
 
+        Console.WriteLine();
+        Console.WriteLine(success
+            ? "Vehicle is successfully parked."
+            : "Failed to park the vehicle. Please try again.");
+
+        // Return false to continue adding other vehicle. Return true - Choose: 0. Back
         return false;
     }
 
