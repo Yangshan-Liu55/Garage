@@ -11,7 +11,7 @@ namespace Garage.Handlers;
 
 internal class GarageHandler : IGarageHandler
 {
-    private Garage<Vehicle> _garage;
+    private Garage<Vehicle>? _garage;
 
     public bool CreateGarage(int capacity)
     {
@@ -21,26 +21,36 @@ internal class GarageHandler : IGarageHandler
 
     public bool AddVehicle(Vehicle vehicle)
     {
+        if (_garage is null) { return false; }
+
         return _garage.Park(vehicle);
     }
 
     public bool CheckRegistrationNumber(String regNumber)
     {
+        if (_garage is null) { return false; }
+
         return _garage.IsRegNumberContained(regNumber);
     }
 
     public bool RemoveVehicle(String regNumber)
     {
+        if (_garage is null) { return false; }
+
         return _garage.Retrieve(regNumber);
     }
 
-    public Vehicle FindVehicle(String regNumber)
+    public Vehicle? FindVehicle(String regNumber)
     {
+        if (_garage is null) { return null; }
+
         return _garage.FindByRegNumber(regNumber);
     }
 
-    public IEnumerable<Vehicle> SearchVehicles(SearchCriteria criteria)
+    public IEnumerable<Vehicle>? SearchVehicles(SearchCriteria criteria)
     {
+        if (_garage is null) { return null; }
+
         IEnumerable<Vehicle> query = _garage;
 
         if (_garage == null || _garage.Count < 1)
@@ -67,14 +77,15 @@ internal class GarageHandler : IGarageHandler
         return query;
     }
 
-    public IEnumerable<Vehicle> GetAllVehicles()
+    public IEnumerable<Vehicle>? GetAllVehicles()
     {
+        if (_garage is null) { return null; }
+
         return _garage;
     }
 
-    public GarageStatistics GetGarageStatistics()
+    public GarageStatistics? GetGarageStatistics()
     {
-        Console.WriteLine($"_garage.Count(): {_garage.Count()}, _garage.Count: {_garage.Count}");
         if (_garage == null || _garage.Count < 1)
         {
             return null;
@@ -117,11 +128,15 @@ internal class GarageHandler : IGarageHandler
 
     public int GetCapacity()
     {
+        if (_garage is null) { return 0; }
+
         return _garage.Capacity;
     }
 
     public int GetCount()
     {
+        if (_garage is null) { return 0; }
+
         return _garage.Count;
     }
 
@@ -130,7 +145,7 @@ internal class GarageHandler : IGarageHandler
     {
         if (_garage == null)
         {
-            CreateGarage(20);
+            _garage = new Garage<Vehicle>(100);
         }
 
         for (int i = 0; i < 5; i++)

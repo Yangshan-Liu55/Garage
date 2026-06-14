@@ -13,12 +13,27 @@ public class UnilTest
     public void CreateGarage_InputCapacityInConstructor()
     {
         //Arrange
-        Garage<Vehicle> Garage = new Garage<Vehicle>(100);
+        Garage<Vehicle> garage = new Garage<Vehicle>(100);
 
         //Act
-        int Capacity = Garage.Capacity;
+        int capacity = garage.Capacity;
 
         //Assert
-        Assert.Equal(100, Capacity);
+        Assert.Equal(100, capacity);
     }
+
+    [Fact]
+    public void Park_AddACar_ArrayVehiclesContainsTheCar()
+    {
+        //Arrange
+        Garage<Vehicle> garage = new Garage<Vehicle>(100);
+        Car car = new Car("ABC123", "yellow", 4, FuelType.Gasoline);
+
+        //Act
+        bool actual = garage.Park(car);
+
+        //Assert
+        Assert.True(actual);
+    }
+
 }

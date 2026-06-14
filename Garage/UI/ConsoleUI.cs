@@ -141,11 +141,12 @@ internal class ConsoleUI : IConsoleUI
             && Enum.IsDefined(typeof(VehicleType), result))
         {
             VehicleType vehicleType = (VehicleType)result;
+            string regNumber = ReadRegNumber();
+            string color = InputHelpers.ReadString("Color: ").ToLower();
+            
             switch (vehicleType)
             {
                 case VehicleType.Car:
-                    string regNumber = ReadRegNumber();
-                    string color = InputHelpers.ReadString("Color: ").ToLower();
                     FuelType fuelType = ChooseFuelType();
 
                     Car car = new Car(regNumber, color, 4, fuelType);
@@ -240,7 +241,7 @@ internal class ConsoleUI : IConsoleUI
         Console.WriteLine();
         Console.WriteLine("===== Find Vehicle ===== ");
         bool result = false;
-        Vehicle vehicle;
+        Vehicle? vehicle;
         do
         {
             string regNumber = InputHelpers.ReadStringToUpper("Registration number: ");
@@ -272,7 +273,7 @@ internal class ConsoleUI : IConsoleUI
         criteria = ChooseColors(criteria);
         criteria = ChooseWheels(criteria);
 
-        IEnumerable<Vehicle> vehicles = _garageHandler.SearchVehicles(criteria);
+        IEnumerable<Vehicle>? vehicles = _garageHandler.SearchVehicles(criteria);
 
         if (vehicles == null)
         {
@@ -347,7 +348,7 @@ internal class ConsoleUI : IConsoleUI
 
     private void ListAllVehicles()
     {
-        IEnumerable<Vehicle> vehicles = _garageHandler.GetAllVehicles();
+        IEnumerable<Vehicle>? vehicles = _garageHandler.GetAllVehicles();
         if (vehicles == null)
         {
             Console.WriteLine("No garage is defined or no vehicle is parked. Please initialize garage.");
@@ -373,7 +374,7 @@ internal class ConsoleUI : IConsoleUI
 
     private void PrintGarageStatistics()
     {
-        GarageStatistics stats = _garageHandler.GetGarageStatistics();
+        GarageStatistics? stats = _garageHandler.GetGarageStatistics();
         if (stats == null)
         {
             Console.WriteLine("No garage is defined or no vehicle is parked. Please initialize garage.");

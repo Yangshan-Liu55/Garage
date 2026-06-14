@@ -74,7 +74,7 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
         }
     }
 
-    public Vehicle FindByRegNumber(string regNumber)
+    public Vehicle? FindByRegNumber(string regNumber)
     {
         try
         {
