@@ -2,33 +2,45 @@ using System.Text;
 using Garage.Interfaces;
 using Garage.Helpers;
 using Garage.Handlers;
-using Garage.Vehicles;
-using Garage.Enums;
-using Garage.Statistics;
-using Garage.Requests;
+using Garage.Models;
+using Garage.Models.Vehicles;
+using Garage.Models.Enums;
+using Garage.Models.Statistics;
+using Garage.Managers;
 
 namespace Garage.UI;
 
 internal class ConsoleUI : IConsoleUI
 {
-    private readonly GarageHandler _garageHandler = new GarageHandler();
+    private readonly GarageManager _garageManager;
+    private readonly GarageHandler _garageHandler;
+
+    public ConsoleUI()
+    {
+        _garageManager = new GarageManager();
+        _garageHandler = new GarageHandler(_garageManager);
+    }
+
     public void Start()
     {
         bool exit = false;
         do
         {
-            PrintMenu(MenuConstants.MainTitle, MenuConstants.MainItems);
+            PrintMenu(MenuConstants.MainTitle, MenuConstants.MainItems, true);
 
-            Console.Write("Choose: ");
-            string choice = InputHelpers.ReadLine;
-            exit = HandleMainMenu(choice);
+            exit = HandleMainMenu();
         } while (!exit);
     }
 
-    private void PrintMenu(string title, List<MenuItem> items)
+    private void PrintMenu(string title, List<MenuItem> items, bool printCurrentGarageName)
     {
         Console.WriteLine();
         Console.WriteLine(title);
+
+        if (printCurrentGarageName)
+        {
+            PrintCurrentGarageName();
+        }
 
         foreach (MenuItem item in items)
         {
@@ -38,39 +50,57 @@ internal class ConsoleUI : IConsoleUI
         Console.WriteLine();
     }
 
-    private bool HandleMainMenu(string choice)
+    private void PrintCurrentGarageName()
     {
-        bool result;
+        string name = "No existing garage. Please create garage!";
+        if (!string.IsNullOrWhiteSpace(_garageManager.CurrentGarageName))
+        {
+            name = _garageManager.CurrentGarageName;
+        }
+
+        Console.WriteLine($"***** Current Garage: {name} *****");
+        Console.WriteLine();
+    }
+
+    private bool HandleMainMenu()
+    {
+        Console.Write("Choose: ");
+        string choice = InputHelpers.ReadLine;
+
         switch (choice)
         {
             case MenuConstants.CreateGarage:
-                int capacity = InputHelpers.ReadInt("Capacity of garage: ");
-                result = _garageHandler.CreateGarage(capacity);
+                string garageName = InputHelpers.ReadString("Garage name: ");
 
-                Console.WriteLine();
-                Console.WriteLine(result ? "Garage is successfully created." : "Failed to create a garage.");
+                if (_garageManager.IsGarageExisting(garageName))
+                {
+                    Console.WriteLine("Garage is already existing!");
+                }
+                else
+                {
+                    int capacity = InputHelpers.ReadInt("Capacity of garage: ");
+
+                    IGarage garage = new Garage<Vehicle>(garageName, capacity);
+                    // IGarage garage = _garageHandler.CreateGarage(garageName, capacity);
+                    bool success = _garageManager.AddGarage(garage);
+
+                    Console.WriteLine();
+                    Console.WriteLine(success
+                        ? "Garage is successfully created."
+                        : "Failed to create a garage. Garage is already existing!");
+                }
+                break;
+            case MenuConstants.SelectGarage:
+                SelectGarage();
                 break;
             case MenuConstants.ManageVehicle:
                 ManageVehicle();
-                break;
-            case MenuConstants.ListAllVehicles:
-                ListAllVehicles();
-                break;
-            case MenuConstants.GarageStatistics:
-                PrintGarageStatistics();
-                break;
-            case MenuConstants.InitializeGarage:
-                result = _garageHandler.InitializeGarage();
-                Console.WriteLine();
-                Console.WriteLine(result
-                    ? "Garage is successfully initialized."
-                    : "Something went wrong! Garage couldn't be initialized.");
                 break;
             case MenuConstants.Exit:
                 return true;
             default:
                 InvalidChoice();
-                HandleMainMenu(InputHelpers.ReadLine);
+                HandleMainMenu();
                 break;
         }
         return false;
@@ -81,21 +111,80 @@ internal class ConsoleUI : IConsoleUI
         Console.WriteLine("Invalid choice. Please choose a valid option number.");
     }
 
+    private void SelectGarage()
+    {
+        List<MenuItem> garageItems = new List<MenuItem>();
+
+        if (_garageManager.Count < 1)
+        {
+            PrintMenu(MenuConstants.SelectGarageTitle, garageItems, true);
+
+            Console.WriteLine("Please create a garage before you can select it.");
+            return;
+        }
+
+        string[] garageNames = _garageManager.GetAllGarageNames().ToArray();
+
+        for (int i = 0; i < garageNames.Length; i++)
+        {
+            MenuItem menuItem = new MenuItem((i + 1).ToString(), garageNames[i]);
+            garageItems.Add(menuItem);
+        }
+        garageItems.Add(new MenuItem("0", "Back"));
+
+        PrintMenu(MenuConstants.SelectGarageTitle, garageItems, true);
+
+        bool back = false;
+        do
+        {
+            Console.WriteLine();
+            Console.Write("Choose: ");
+            string choice = InputHelpers.ReadLine;
+
+            if (int.TryParse(choice, out int index) && index < (garageNames.Length + 1))
+            {
+                if (index != 0)
+                {
+                    bool success = _garageManager.SelectGarage(garageNames[index - 1]);
+
+                    Console.WriteLine(success
+                        ? "The current garage is successfully changed!"
+                        : "Failed to change the current garage. Selected garage is not existing!");
+                }
+
+                back = true;
+            }
+            else
+            {
+                InvalidChoice();
+            }
+        } while (!back);
+    }
+
     private void ManageVehicle()
     {
         bool back = false;
         do
         {
-            PrintMenu(MenuConstants.VehicleTitle, MenuConstants.VehicleItems);
+            PrintMenu(MenuConstants.VehicleTitle, MenuConstants.VehicleItems, true);
 
-            Console.Write("Choose: ");
-            string choice = InputHelpers.ReadLine;
-            back = HandleVehicleMenu(choice);
+            if (string.IsNullOrWhiteSpace(_garageManager.CurrentGarageName))
+            {
+                back = true;
+            }
+            else
+            {
+
+                back = HandleVehicleMenu();
+            }
         } while (!back);
     }
 
-    private bool HandleVehicleMenu(string choice)
+    private bool HandleVehicleMenu()
     {
+        Console.Write("Choose: ");
+        string choice = InputHelpers.ReadLine;
+
         switch (choice)
         {
             case MenuConstants.AddVehicle:
@@ -110,11 +199,20 @@ internal class ConsoleUI : IConsoleUI
             case MenuConstants.SearchVehicles:
                 SearchVehicles();
                 break;
+            case MenuConstants.ListAllVehicles:
+                ListAllVehicles();
+                break;
+            case MenuConstants.GarageStatistics:
+                PrintGarageStatistics();
+                break;
+            case MenuConstants.InitializeGarage:
+                InitializeCurrentGarage();
+                break;
             case MenuConstants.Back:
                 return true;
             default:
                 InvalidChoice();
-                HandleVehicleMenu(InputHelpers.ReadLine);
+                HandleVehicleMenu();
                 break;
         }
         return false;
@@ -125,15 +223,15 @@ internal class ConsoleUI : IConsoleUI
         bool back = false;
         do
         {
-            PrintMenu(MenuConstants.AddVehicleTitle, MenuConstants.AddVehicleItems);
+            PrintMenu(MenuConstants.AddVehicleTitle, MenuConstants.AddVehicleItems, true);
 
-            string choice = InputHelpers.ReadString("Choose: ");
-            back = HandleAddVehicleMenu(choice);
+            back = HandleAddVehicleMenu();
         } while (!back);
     }
 
-    private bool HandleAddVehicleMenu(string choice)
+    private bool HandleAddVehicleMenu()
     {
+        string choice = InputHelpers.ReadString("Choose: ");
         bool success = false;
 
         if (int.TryParse(choice, out int result)
@@ -154,9 +252,9 @@ internal class ConsoleUI : IConsoleUI
 
                     break;
                 case VehicleType.Motorcycle:
-                    int cylinderVolum = InputHelpers.ReadInt("Enter cylinder volumn: ");
+                    int cylinderVolume = InputHelpers.ReadInt("Enter cylinder volumn: ");
 
-                    Motorcycle motorcycle = new Motorcycle(regNumber, color, 2, cylinderVolum);
+                    Motorcycle motorcycle = new Motorcycle(regNumber, color, 2, cylinderVolume);
 
                     success = _garageHandler.AddVehicle(motorcycle);
 
@@ -270,6 +368,8 @@ internal class ConsoleUI : IConsoleUI
     {
         Console.WriteLine();
         Console.WriteLine("===== Find Vehicle ===== ");
+        PrintCurrentGarageName();
+
         bool result = false;
         Vehicle? vehicle;
         do
@@ -302,6 +402,11 @@ internal class ConsoleUI : IConsoleUI
         criteria = ChooseVehicleTypes(criteria);
         criteria = ChooseColors(criteria);
         criteria = ChooseWheels(criteria);
+        criteria = ChooseFuelTypes(criteria);
+        criteria = ChooseCylinderVolumes(criteria);
+        criteria = ChooseNumbersOfSeats(criteria);
+        criteria = ChooseLengths(criteria);
+        criteria = ChooseNumbersOfEngines(criteria);
 
         IEnumerable<Vehicle>? vehicles = _garageHandler.SearchVehicles(criteria);
 
@@ -316,6 +421,7 @@ internal class ConsoleUI : IConsoleUI
 
         sb.AppendLine("");
         sb.AppendLine($"===== {vehicles.Count()} vehicle(s) found =====");
+        sb.AppendLine($"***** Current Garage: {_garageManager.CurrentGarageName} *****");
 
         foreach (Vehicle vehicle in vehicles)
         {
@@ -327,7 +433,8 @@ internal class ConsoleUI : IConsoleUI
 
     private SearchCriteria ChooseVehicleTypes(SearchCriteria criteria)
     {
-        PrintMenu("Vehicle Type options: ", MenuConstants.VehicleTypes);
+        PrintMenu("Vehicle Type options: ", MenuConstants.VehicleTypes, false);
+
         Console.Write("Select Vehicle Type(s): ");
         string input = InputHelpers.ReadLine;
         string[] array = input.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
@@ -376,6 +483,96 @@ internal class ConsoleUI : IConsoleUI
         return criteria;
     }
 
+    private SearchCriteria ChooseFuelTypes(SearchCriteria criteria)
+    {
+        Console.WriteLine();
+        Console.WriteLine("Fuel type options: ");
+        Console.WriteLine($"{FuelType.Gasoline.ToString("d")}. Gasoline");
+        Console.WriteLine($"{FuelType.Diesel.ToString("d")}. Diesel");
+
+        Console.Write("Select fuel type(s): ");
+        string input = InputHelpers.ReadLine;
+        string[] array = input.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (string str in array)
+        {
+            if (Enum.TryParse(str.Trim(), out FuelType type))
+            {
+                if (Enum.IsDefined(typeof(FuelType), type))
+                {
+                    criteria.FuelTypes.Add(type);
+                }
+
+            }
+        }
+
+        return criteria;
+    }
+
+    private SearchCriteria ChooseCylinderVolumes(SearchCriteria criteria)
+    {
+        Console.WriteLine();
+        Console.Write("Select cylinder volume(s):");
+        string input = InputHelpers.ReadLine.ToLower();
+
+        string[] array = input.Replace(' ', ',')
+            .Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+        criteria.CylinderVolumes = Array.ConvertAll(
+            array,
+            s => int.TryParse(s, out int i) ? i : -1
+        );
+
+        return criteria;
+    }
+
+    private SearchCriteria ChooseNumbersOfSeats(SearchCriteria criteria)
+    {
+        Console.WriteLine();
+        Console.Write("Select number(s) of seats:");
+        string input = InputHelpers.ReadLine.ToLower();
+
+        string[] array = input.Replace(' ', ',')
+            .Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+        criteria.NumbersOfSeats = Array.ConvertAll(
+            array,
+            s => int.TryParse(s, out int i) ? i : -1
+        );
+
+        return criteria;
+    }
+
+    private SearchCriteria ChooseLengths(SearchCriteria criteria)
+    {
+        Console.WriteLine();
+        Console.Write("Select length(s):");
+        string input = InputHelpers.ReadLine.ToLower();
+
+        string[] array = input.Replace(' ', ',')
+            .Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+        criteria.Lengths = Array.ConvertAll(
+            array,
+            s => double.TryParse(s, out double i) ? i : -1
+        );
+
+        return criteria;
+    }
+
+    private SearchCriteria ChooseNumbersOfEngines(SearchCriteria criteria)
+    {
+        Console.WriteLine();
+        Console.Write("Select number(s) of engines:");
+        string input = InputHelpers.ReadLine.ToLower();
+
+        string[] array = input.Replace(' ', ',')
+            .Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+        criteria.NumbersOfSeats = Array.ConvertAll(
+            array,
+            s => int.TryParse(s, out int i) ? i : -1
+        );
+
+        return criteria;
+    }
+
     private void ListAllVehicles()
     {
         IEnumerable<Vehicle>? vehicles = _garageHandler.GetAllVehicles();
@@ -389,6 +586,7 @@ internal class ConsoleUI : IConsoleUI
 
             sb.AppendLine("");
             sb.AppendLine("===== List All Vehicles =====");
+            sb.AppendLine($"***** Current Garage: {_garageManager.CurrentGarageName} *****");
 
             foreach (var vehicle in vehicles)
             {
@@ -416,6 +614,7 @@ internal class ConsoleUI : IConsoleUI
         sb.AppendLine("");
         sb.AppendLine("===== Garage Statistics =====");
         sb.AppendLine("*** List vehicle types and how many of each are in the garage ***");
+        sb.AppendLine($"***** Current Garage: {_garageManager.CurrentGarageName} *****");
         sb.AppendLine("");
         sb.AppendLine("Parked vehicles: ");
 
@@ -429,5 +628,15 @@ internal class ConsoleUI : IConsoleUI
         sb.AppendLine($"Garage capacity: {stats.Capacity}");
 
         Console.WriteLine(sb.ToString());
+    }
+
+    private void InitializeCurrentGarage()
+    {
+        bool success = _garageHandler.InitializeGarage();
+
+        Console.WriteLine();
+        Console.WriteLine(success
+            ? "The current garage is successfully initialized."
+            : "Failed to initialize the current garage. The current garage is not existing!");
     }
 }

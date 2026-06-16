@@ -1,4 +1,4 @@
-﻿using Garage.Enums;
+﻿using Garage.Models.Enums;
 
 namespace Garage.Helpers;
 

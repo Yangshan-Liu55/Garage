@@ -1,7 +1,7 @@
 using Garage.Interfaces;
-using Garage.Enums;
+using Garage.Models.Enums;
 
-namespace Garage.Vehicles;
+namespace Garage.Models.Vehicles;
 
 public abstract class Vehicle : IVehicle
 {

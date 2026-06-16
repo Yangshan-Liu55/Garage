@@ -1,4 +1,4 @@
-namespace Garage.Statistics;
+namespace Garage.Models.Statistics;
 
 public class GarageStatistics
 {

@@ -1,21 +1,25 @@
-using Garage.Enums;
+using Garage.Models.Enums;
 
 namespace Garage.Helpers;
+
 public class MenuConstants
 {
     public const string MainTitle = "===== Garage Application =====";
     public const string CreateGarage = "1";
-    public const string ManageVehicle = "2";
-    public const string ListAllVehicles = "3";
-    public const string GarageStatistics = "4";
-    public const string InitializeGarage = "5";
+    public const string SelectGarage = "2";
+    public const string ManageVehicle = "3";
     public const string Exit = "0";
 
-    public const string VehicleTitle = "===== Manage Vehicle =====";
+    public const string SelectGarageTitle = "===== Select A Garage =====";
+
+    public const string VehicleTitle = "===== Manage Vehicles =====";
     public const string AddVehicle = "1";
     public const string RemoveVehicle = "2";
     public const string FindVehicle = "3";
     public const string SearchVehicles = "4";
+    public const string ListAllVehicles = "5";
+    public const string GarageStatistics = "6";
+    public const string InitializeGarage = "7";
     public const string Back = "0";
 
     public const string AddVehicleTitle = "===== Add Vehicle =====";
@@ -27,10 +31,8 @@ public class MenuConstants
     public static readonly List<MenuItem> MainItems = new List<MenuItem>
     {
         new MenuItem(CreateGarage, "Create Garage"),
-        new MenuItem(ManageVehicle, "Manage Vehicle"),
-        new MenuItem(ListAllVehicles, "List All Vehicles"),
-        new MenuItem(GarageStatistics, "Garage Statistics"),
-        new MenuItem(InitializeGarage, "Initialize Garage"),
+        new MenuItem(SelectGarage, "Select Garage"),
+        new MenuItem(ManageVehicle, "Manage Vehicles"),
         new MenuItem(Exit, "Close")
     };
 
@@ -40,6 +42,9 @@ public class MenuConstants
         new MenuItem(RemoveVehicle, "Remove Vehicle"),
         new MenuItem(FindVehicle, "Find Vehicle"),
         new MenuItem(SearchVehicles, "Search Vehicles"),
+        new MenuItem(ListAllVehicles, "List All Vehicles"),
+        new MenuItem(GarageStatistics, "Garage Statistics"),
+        new MenuItem(InitializeGarage, "Initialize Current Garage"),
         new MenuItem(Back, "Back")
     };
 

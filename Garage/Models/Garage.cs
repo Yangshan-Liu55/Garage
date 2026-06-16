@@ -1,29 +1,33 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Garage.Interfaces;
-using Garage.Vehicles;
+using Garage.Models.Vehicles;
 
-namespace Garage;
+namespace Garage.Models;
 
-public class Garage<T> : IEnumerable<T> where T : Vehicle
+public class Garage<T> : IGarage where T : Vehicle
 {
-    private readonly T?[] _vehicles;
+    private readonly Vehicle?[] _vehicles;
+    private readonly string _name = "Garage";
     private readonly int _capacity;
     private readonly Dictionary<string, int> _regNumberIndex;
     private int _count;
 
+    public string Name { get => _name; }
     public int Capacity { get => _capacity; }
     public int Count { get => _count; }
 
-    public Garage(int capacity)
+    public Garage(string name, int capacity)
     {
+        _name = name;
         _capacity = capacity;
         _vehicles = new T[capacity];
         _count = 0;
         _regNumberIndex = new Dictionary<string, int>();
     }
 
-    public bool Park(T vehicle)
+    public bool Park(Vehicle vehicle)
     {
         if (_count >= _capacity)
         {
@@ -36,6 +40,8 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
             {
                 if (_vehicles[i] == null)
                 {
+                    vehicle.RegistrationNumber = vehicle.RegistrationNumber.ToUpper();
+
                     _regNumberIndex.Add(vehicle.RegistrationNumber, i);
                     _vehicles[i] = vehicle;
                     _count++;
@@ -98,11 +104,11 @@ public class Garage<T> : IEnumerable<T> where T : Vehicle
         }
     }
 
-    public IEnumerator<T> GetEnumerator()
+    public IEnumerator<Vehicle> GetEnumerator()
     {
-        foreach (var vehicle in _vehicles)
+        foreach (T? vehicle in _vehicles)
         {
-            if (vehicle != null)
+            if (vehicle is not null)
             {
                 yield return vehicle;
             }
