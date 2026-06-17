@@ -113,7 +113,12 @@ internal class ConsoleUI : IConsoleUI
                 }
                 else
                 {
-                    int capacity = InputHelpers.ReadInt("Capacity of garage: ");
+                    Console.WriteLine("Set Default Capacity for Garage?(Y/N): ");
+                    string input = InputHelpers.ReadLine;
+
+                    int capacity = !string.IsNullOrEmpty(input) && input.ToUpper().Equals("Y") 
+                        ? ConfigurationHelper.DefaultCapacity 
+                        : InputHelpers.ReadInt("Enter capacity of garage: ");
 
                     IGarage garage = new Garage<Vehicle>(garageName, capacity);
                     bool success = _garageManager.AddGarage(garage);
