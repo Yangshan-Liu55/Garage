@@ -4,7 +4,7 @@ using Garage.Helpers;
 
 namespace Garage.Interfaces;
 
-internal interface IGarageHandler
+public interface IGarageHandler
 {
     bool InitializeGarage();
 

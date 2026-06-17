@@ -2,10 +2,10 @@ using Garage.Interfaces;
 
 namespace Garage.Managers;
 
-internal class GarageManager
+public class GarageManager
 {
     private readonly Dictionary<string, IGarage> _garages;
-    
+
     public int Count => _garages.Count;
 
     public string? CurrentGarageName { get; set; }
@@ -55,12 +55,18 @@ internal class GarageManager
 
     public IGarage? GetCurrentGarage()
     {
-        if (!string.IsNullOrWhiteSpace(CurrentGarageName) 
+        if (!string.IsNullOrWhiteSpace(CurrentGarageName)
             && _garages.TryGetValue(CurrentGarageName, out var garage))
         {
             return garage;
         }
         return null;
+    }
+
+    public void Clear()
+    {
+        _garages.Clear();
+        CurrentGarageName = null;
     }
 
     public IEnumerable<string> GetAllGarageNames()

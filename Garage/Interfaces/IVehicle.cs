@@ -2,7 +2,7 @@
 
 namespace Garage.Interfaces;
 
-internal interface IVehicle
+public interface IVehicle
 {
     string RegistrationNumber { get;}
     string Color { get; }

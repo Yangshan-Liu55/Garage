@@ -1,0 +1,297 @@
+{
+  "CurrentGarageName": "Garage 1",
+  "Garages": [
+    {
+      "Name": "General Garage",
+      "Capacity": 3,
+      "Count": 2,
+      "Vehicles": [
+        {
+          "VehicleType": "Car",
+          "RegistrationNumber": "ABC123",
+          "Color": "black",
+          "Wheels": 4,
+          "FuelType": "Gasoline",
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Motorcycle",
+          "RegistrationNumber": "BCD123",
+          "Color": "blue",
+          "Wheels": 2,
+          "FuelType": null,
+          "CylinderVolume": 600,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        }
+      ]
+    },
+    {
+      "Name": "Hangar",
+      "Capacity": 6,
+      "Count": 1,
+      "Vehicles": [
+        {
+          "VehicleType": "Airplane",
+          "RegistrationNumber": "BOI123",
+          "Color": "grey",
+          "Wheels": 4,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": 2
+        }
+      ]
+    },
+    {
+      "Name": "Motorcykel Garage",
+      "Capacity": 2,
+      "Count": 1,
+      "Vehicles": [
+        {
+          "VehicleType": "Bus",
+          "RegistrationNumber": "SCHOOL1",
+          "Color": "red",
+          "Wheels": 4,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": 30,
+          "Length": null,
+          "NumberOfEngines": null
+        }
+      ]
+    },
+    {
+      "Name": "Garage 1",
+      "Capacity": 30,
+      "Count": 20,
+      "Vehicles": [
+        {
+          "VehicleType": "Car",
+          "RegistrationNumber": "Q0CUPU",
+          "Color": "white",
+          "Wheels": 4,
+          "FuelType": "Gasoline",
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Car",
+          "RegistrationNumber": "O444PG",
+          "Color": "blue",
+          "Wheels": 4,
+          "FuelType": "Diesel",
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Car",
+          "RegistrationNumber": "BG6BLQ",
+          "Color": "black",
+          "Wheels": 4,
+          "FuelType": "Gasoline",
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Car",
+          "RegistrationNumber": "7K81PG",
+          "Color": "red",
+          "Wheels": 4,
+          "FuelType": "Diesel",
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Car",
+          "RegistrationNumber": "1Y8T6M",
+          "Color": "black",
+          "Wheels": 4,
+          "FuelType": "Gasoline",
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Motorcycle",
+          "RegistrationNumber": "1PA3CO",
+          "Color": "black",
+          "Wheels": 2,
+          "FuelType": null,
+          "CylinderVolume": 100,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Motorcycle",
+          "RegistrationNumber": "DGUM05",
+          "Color": "blue",
+          "Wheels": 2,
+          "FuelType": null,
+          "CylinderVolume": 200,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Motorcycle",
+          "RegistrationNumber": "RWKFGJ",
+          "Color": "black",
+          "Wheels": 2,
+          "FuelType": null,
+          "CylinderVolume": 300,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Motorcycle",
+          "RegistrationNumber": "1H8OYR",
+          "Color": "blue",
+          "Wheels": 2,
+          "FuelType": null,
+          "CylinderVolume": 400,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Motorcycle",
+          "RegistrationNumber": "SKPKRM",
+          "Color": "red",
+          "Wheels": 2,
+          "FuelType": null,
+          "CylinderVolume": 500,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Bus",
+          "RegistrationNumber": "BMNQ3U",
+          "Color": "red",
+          "Wheels": 4,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": 10,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Bus",
+          "RegistrationNumber": "0TN2DZ",
+          "Color": "blue",
+          "Wheels": 4,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": 20,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Bus",
+          "RegistrationNumber": "585R2M",
+          "Color": "white",
+          "Wheels": 4,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": 30,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Bus",
+          "RegistrationNumber": "U4ZGWF",
+          "Color": "black",
+          "Wheels": 4,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": 40,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Boat",
+          "RegistrationNumber": "6FCVFZ",
+          "Color": "white",
+          "Wheels": 0,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": 5,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Boat",
+          "RegistrationNumber": "6LN817",
+          "Color": "blue",
+          "Wheels": 0,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": 6,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Boat",
+          "RegistrationNumber": "7ESOBJ",
+          "Color": "red",
+          "Wheels": 0,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": 7,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Boat",
+          "RegistrationNumber": "F2Q9H0",
+          "Color": "blue",
+          "Wheels": 0,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": 8,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Boat",
+          "RegistrationNumber": "PBG21K",
+          "Color": "white",
+          "Wheels": 0,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": 9,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Airplane",
+          "RegistrationNumber": "9JJI3J",
+          "Color": "white",
+          "Wheels": 3,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": 1
+        }
+      ]
+    }
+  ]
+}

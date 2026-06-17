@@ -9,6 +9,7 @@ public abstract class Vehicle : IVehicle
     public string Color { get; set; }
     public int Wheels { get; set; }
     public abstract VehicleType VehicleType { get; }
+    public abstract double RequiredSpace { get; }
 
     protected Vehicle(string registrationNumber, string color, int wheels)
     {

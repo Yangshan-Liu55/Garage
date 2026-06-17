@@ -2,11 +2,14 @@ using Garage.Models.Vehicles;
 
 namespace Garage.Interfaces;
 
-internal interface IGarage : IEnumerable<Vehicle>
+public interface IGarage : IEnumerable<Vehicle>
 {
     string Name { get; }
     int Capacity { get; }
     int Count { get; }
+
+    double AvailableSpace { get; }
+    double OccupiedSpace { get; }
 
     bool Park(Vehicle vehicle);
 

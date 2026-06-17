@@ -1,4 +1,5 @@
 using System.Text;
+
 using Garage.Interfaces;
 using Garage.Helpers;
 using Garage.Handlers;
@@ -14,6 +15,7 @@ internal class ConsoleUI : IConsoleUI
 {
     private readonly GarageManager _garageManager;
     private readonly GarageHandler _garageHandler;
+    private readonly string dataFolder = "Data";
 
     public ConsoleUI()
     {
@@ -23,6 +25,8 @@ internal class ConsoleUI : IConsoleUI
 
     public void Start()
     {
+        Init();
+
         bool exit = false;
         do
         {
@@ -30,6 +34,30 @@ internal class ConsoleUI : IConsoleUI
 
             exit = HandleMainMenu();
         } while (!exit);
+
+        Exit();
+    }
+
+    private void Init()
+    {
+        string filePath = Path.Combine(dataFolder, "autosave.json");
+        bool success = _garageHandler.LoadSystem(filePath);
+
+        Console.WriteLine();
+        Console.WriteLine(success ? $"System data is automatically loaded from {filePath}."
+            : $"Faild loading data automatically. File {filePath} is not existing.");
+    }
+
+    private void Exit()
+    {
+        Directory.CreateDirectory(dataFolder);
+        string filePath = Path.Combine(dataFolder, "autosave.json");
+
+        if (_garageHandler.SaveSystem(filePath))
+        {
+            Console.WriteLine();
+            Console.WriteLine($"System data is automatically saved to {filePath}!");
+        }
     }
 
     private void PrintMenu(string title, List<MenuItem> items, bool printCurrentGarageName)
@@ -52,13 +80,16 @@ internal class ConsoleUI : IConsoleUI
 
     private void PrintCurrentGarageName()
     {
-        string name = "No existing garage. Please create garage!";
         if (!string.IsNullOrWhiteSpace(_garageManager.CurrentGarageName))
         {
-            name = _garageManager.CurrentGarageName;
+            Console.WriteLine($"***** Current Garage: {_garageManager.CurrentGarageName} *****");
+            Console.WriteLine($"***** Available spot(s): {Math.Round(_garageHandler.CurrentAvailableSpace, 2)} *****");
+        }
+        else
+        {
+            Console.WriteLine("No existing garage. Please create garage!");
         }
 
-        Console.WriteLine($"***** Current Garage: {name} *****");
         Console.WriteLine();
     }
 
@@ -70,6 +101,10 @@ internal class ConsoleUI : IConsoleUI
         switch (choice)
         {
             case MenuConstants.CreateGarage:
+                Console.WriteLine();
+                Console.WriteLine(MenuConstants.CreateGarageTitle);
+                Console.WriteLine($"***** Current Garage: {_garageManager.CurrentGarageName} *****");
+
                 string garageName = InputHelpers.ReadString("Garage name: ");
 
                 if (_garageManager.IsGarageExisting(garageName))
@@ -81,12 +116,12 @@ internal class ConsoleUI : IConsoleUI
                     int capacity = InputHelpers.ReadInt("Capacity of garage: ");
 
                     IGarage garage = new Garage<Vehicle>(garageName, capacity);
-                    // IGarage garage = _garageHandler.CreateGarage(garageName, capacity);
                     bool success = _garageManager.AddGarage(garage);
 
                     Console.WriteLine();
                     Console.WriteLine(success
-                        ? "Garage is successfully created."
+                        ? @"Garage is successfully created.
+Now you can go to Select Garage menu to select it."
                         : "Failed to create a garage. Garage is already existing!");
                 }
                 break;
@@ -98,6 +133,12 @@ internal class ConsoleUI : IConsoleUI
                 break;
             case MenuConstants.Exit:
                 return true;
+            case MenuConstants.SaveSystemData:
+                SaveSystemData();
+                break;
+            case MenuConstants.LoadSystemData:
+                LoadSystemData();
+                break;
             default:
                 InvalidChoice();
                 HandleMainMenu();
@@ -138,7 +179,7 @@ internal class ConsoleUI : IConsoleUI
         do
         {
             Console.WriteLine();
-            Console.Write("Choose: ");
+            Console.Write("Selct: ");
             string choice = InputHelpers.ReadLine;
 
             if (int.TryParse(choice, out int index) && index < (garageNames.Length + 1))
@@ -223,10 +264,42 @@ internal class ConsoleUI : IConsoleUI
         bool back = false;
         do
         {
-            PrintMenu(MenuConstants.AddVehicleTitle, MenuConstants.AddVehicleItems, true);
+            List<MenuItem> menuItems = GetAvalableVehicleItems();
+            PrintMenu(MenuConstants.AddVehicleTitle, menuItems, true);
 
-            back = HandleAddVehicleMenu();
+            if (menuItems.Count < 1)
+            {
+                Console.WriteLine("Garage is full. Please select another garage!");
+                back = true;
+            }
+            else
+            {
+                back = HandleAddVehicleMenu();
+            }
         } while (!back);
+    }
+
+    private List<MenuItem> GetAvalableVehicleItems()
+    {
+        List<MenuItem> items = new List<MenuItem>();
+        double availableSpace = _garageHandler.CurrentAvailableSpace;
+
+        foreach (VehicleType type in Enum.GetValues(typeof(VehicleType)))
+        {
+            if (GarageConstants.VehicleRequiredSpace[type] <= availableSpace)
+            {
+                items.Add(
+                    new MenuItem(type.ToString("d"), "Add " + type.ToString())
+                );
+            }
+        }
+
+        if (items.Count > 0)
+        {
+            items.Add(new MenuItem(MenuConstants.Back, "Back"));
+        }
+
+        return items;
     }
 
     private bool HandleAddVehicleMenu()
@@ -346,7 +419,7 @@ internal class ConsoleUI : IConsoleUI
     private void RemoveVehicle()
     {
         Console.WriteLine();
-        Console.WriteLine("===== Remove Vehicle ===== ");
+        Console.WriteLine("===== Remove Vehicle =====");
         bool removed = false;
         do
         {
@@ -367,7 +440,7 @@ internal class ConsoleUI : IConsoleUI
     private void FindVehicle()
     {
         Console.WriteLine();
-        Console.WriteLine("===== Find Vehicle ===== ");
+        Console.WriteLine("===== Find Vehicle =====");
         PrintCurrentGarageName();
 
         bool result = false;
@@ -378,12 +451,14 @@ internal class ConsoleUI : IConsoleUI
             vehicle = _garageHandler.FindVehicle(regNumber);
             if (vehicle != null)
             {
+                Console.WriteLine();
                 Console.WriteLine("Vehicle is found:");
                 Console.WriteLine(vehicle.ToString());
                 result = true;
             }
             else
             {
+                Console.WriteLine();
                 Console.WriteLine("Vehicle is not found! Please enter a valid registration number.");
                 Console.WriteLine();
             }
@@ -393,7 +468,7 @@ internal class ConsoleUI : IConsoleUI
     private void SearchVehicles()
     {
         Console.WriteLine();
-        Console.WriteLine($"===== {MenuConstants.SearchVehiclesTitle} ===== ");
+        Console.WriteLine($"===== {MenuConstants.SearchVehiclesTitle} =====");
         Console.WriteLine("*** Supports multiple selections separated by commas *** ");
         Console.WriteLine("*** For example, Select Car and Motorcycle: 1,2 *** ");
         Console.WriteLine("*** Leave empty to ignore selection (i.e. Select all options) *** ");
@@ -420,7 +495,7 @@ internal class ConsoleUI : IConsoleUI
         StringBuilder sb = new StringBuilder();
 
         sb.AppendLine("");
-        sb.AppendLine($"===== {vehicles.Count()} vehicle(s) found =====");
+        sb.AppendLine($"=== {vehicles.Count()} vehicle(s) found ===");
         sb.AppendLine($"***** Current Garage: {_garageManager.CurrentGarageName} *****");
 
         foreach (Vehicle vehicle in vehicles)
@@ -624,19 +699,51 @@ internal class ConsoleUI : IConsoleUI
         }
         sb.AppendLine("");
         sb.AppendLine($"Total parked vehicles: {stats.TotalParkedVehicles}");
-        sb.AppendLine($"Total available parking spots: {stats.Capacity - stats.TotalParkedVehicles}");
+        sb.AppendLine($"Available parking spots: {Math.Round(_garageHandler.CurrentAvailableSpace, 2)}");
         sb.AppendLine($"Garage capacity: {stats.Capacity}");
 
         Console.WriteLine(sb.ToString());
     }
 
+    // Hardcoded, add some vehicles to the current garage.
     private void InitializeCurrentGarage()
     {
         bool success = _garageHandler.InitializeGarage();
 
         Console.WriteLine();
-        Console.WriteLine(success
-            ? "The current garage is successfully initialized."
+        Console.WriteLine(success ? "The current garage is successfully initialized."
             : "Failed to initialize the current garage. The current garage is not existing!");
+    }
+
+    private void SaveSystemData()
+    {
+        Console.WriteLine();
+        Console.WriteLine(MenuConstants.SaveSystemTitle);
+        Console.WriteLine();
+
+        string fileName = InputHelpers.ReadString("Filename(e.g. garages-stockholm): ");
+        string filePath = Path.Combine(dataFolder, $"{fileName}.json");
+
+        bool success = _garageHandler.SaveSystem(filePath);
+
+        Console.WriteLine();
+        Console.WriteLine(success ? $"Successfully saved system data to {filePath}."
+            : $"Failed to save system data to {filePath}");
+    }
+
+    private void LoadSystemData()
+    {
+        Console.WriteLine();
+        Console.WriteLine(MenuConstants.LoadSystemTitle);
+        Console.WriteLine();
+
+        string fileName = InputHelpers.ReadString("Filename(e.g. garages-stockholm): ");
+        string filePath = Path.Combine(dataFolder, $"{fileName}.json");
+
+        bool success = _garageHandler.LoadSystem(filePath);
+
+        Console.WriteLine();
+        Console.WriteLine(success ? $"System data is loaded from {filePath}."
+            : $"Failed to load the system data. File {filePath} is not existing.");
     }
 }

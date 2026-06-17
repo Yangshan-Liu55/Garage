@@ -6,13 +6,19 @@ using Garage.Helpers;
 using Garage.Managers;
 using System.Text;
 using System.Linq;
+using Garage.Services;
+using Garage.Models.DTOs;
+using Garage.Models;
 
 namespace Garage.Handlers;
 
-internal class GarageHandler : IGarageHandler
+public class GarageHandler : IGarageHandler
 {
     private readonly GarageManager _garageManager;
+
     private IGarage? CurrentGarage => _garageManager?.GetCurrentGarage();
+
+    public double CurrentAvailableSpace => CurrentGarage?.AvailableSpace ?? 0;
 
     public GarageHandler(GarageManager garageManager)
     {
@@ -21,7 +27,13 @@ internal class GarageHandler : IGarageHandler
 
     public bool AddVehicle(Vehicle vehicle)
     {
-        return CurrentGarage?.Park(vehicle) ?? false;
+        IGarage? garage = CurrentGarage;
+        if (garage is null)
+        {
+            return false;
+        }
+        return garage.AvailableSpace >= vehicle.RequiredSpace
+            && garage.Park(vehicle);
     }
 
     public bool CheckRegistrationNumber(string regNumber)
@@ -67,7 +79,7 @@ internal class GarageHandler : IGarageHandler
             {
                 if (v.VehicleType.Equals(VehicleType.Car))
                 {
-                    Car car = (Car) v;
+                    Car car = (Car)v;
                     return criteria.FuelTypes.Contains(car.FuelType);
                 }
                 return false;
@@ -81,7 +93,7 @@ internal class GarageHandler : IGarageHandler
             {
                 if (v.VehicleType.Equals(VehicleType.Motorcycle))
                 {
-                    Motorcycle m = (Motorcycle) v;
+                    Motorcycle m = (Motorcycle)v;
                     return Array.IndexOf(criteria.CylinderVolumes, m.CylinderVolume) > -1;
                 }
                 return false;
@@ -94,7 +106,7 @@ internal class GarageHandler : IGarageHandler
             {
                 if (v.VehicleType.Equals(VehicleType.Bus))
                 {
-                    Bus b = (Bus) v;
+                    Bus b = (Bus)v;
                     return Array.IndexOf(criteria.NumbersOfSeats, b.NumberOfSeats) > -1;
                 }
                 return false;
@@ -107,7 +119,7 @@ internal class GarageHandler : IGarageHandler
             {
                 if (v.VehicleType.Equals(VehicleType.Boat))
                 {
-                    Boat b = (Boat) v;
+                    Boat b = (Boat)v;
                     return Array.IndexOf(criteria.Lengths, b.Length) > -1;
                 }
                 return false;
@@ -120,7 +132,7 @@ internal class GarageHandler : IGarageHandler
             {
                 if (v.VehicleType.Equals(VehicleType.Airplane))
                 {
-                    Airplane a = (Airplane) v;
+                    Airplane a = (Airplane)v;
                     return Array.IndexOf(criteria.NumbersOfEngines, a.NumberOfEngines) > -1;
                 }
                 return false;
@@ -245,6 +257,50 @@ internal class GarageHandler : IGarageHandler
         return true;
     }
 
+    public bool SaveSystem(string filePath)
+    {
+        GarageFileService.SaveGarages(filePath, _garageManager);
+
+        return true;
+    }
+
+    public bool LoadSystem(string filePath)
+    {
+        var systemData = GarageFileService.LoadGarages(filePath);
+
+        if (systemData is null)
+        {
+            return false;
+        }
+
+        _garageManager.Clear();
+
+        foreach (GarageData garageData in systemData.Garages)
+        {
+            IGarage garage = new Garage<Vehicle>(garageData.Name, garageData.Capacity);
+
+            foreach (VehicleData vehicleData in garageData.Vehicles)
+            {
+                Vehicle? vehicle = CreateVehicle(vehicleData);
+                if (vehicle is not null)
+                {
+                    garage.Park(vehicle);
+                }
+            }
+
+            _garageManager.AddGarage(garage);
+        }
+
+        if (!string.IsNullOrWhiteSpace(
+            systemData.CurrentGarageName))
+        {
+            _garageManager.SelectGarage(
+                systemData.CurrentGarageName);
+        }
+
+        return true;
+    }
+
     private string GenerateRandomRegNumber()
     {
         string regNumber;
@@ -257,4 +313,50 @@ internal class GarageHandler : IGarageHandler
             }
         } while (true);
     }
+
+    private Vehicle? CreateVehicle(VehicleData data)
+    {
+        switch (data.VehicleType)
+        {
+            case nameof(Car):
+                return new Car(
+                        data.RegistrationNumber,
+                        data.Color,
+                        data.Wheels,
+                        Enum.Parse<FuelType>(data.FuelType!)
+                    );
+            case nameof(Motorcycle):
+                return new Motorcycle(
+                        data.RegistrationNumber,
+                        data.Color,
+                        data.Wheels,
+                        data.CylinderVolume ?? 0
+                    );
+            case nameof(Bus):
+                return new Bus(
+                    data.RegistrationNumber,
+                    data.Color,
+                    data.Wheels,
+                    data.NumberOfSeats ?? 0
+                );
+            case nameof(Boat):
+                return new Boat(
+                    data.RegistrationNumber,
+                    data.Color,
+                    data.Wheels,
+                    data.Length ?? 0
+                );
+            case nameof(Airplane):
+                return new Airplane(
+                    data.RegistrationNumber,
+                    data.Color,
+                    data.Wheels,
+                    data.NumberOfEngines ?? 0
+                );
+            default:
+                return null;
+        }
+    }
+
+
 }

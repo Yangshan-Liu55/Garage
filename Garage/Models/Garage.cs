@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Garage.Interfaces;
 using Garage.Models.Vehicles;
+using Garage.Models.Enums;
 
 namespace Garage.Models;
 
@@ -18,6 +19,10 @@ public class Garage<T> : IGarage where T : Vehicle
     public int Capacity { get => _capacity; }
     public int Count { get => _count; }
 
+    public double OccupiedSpace => this.Sum(v => v.RequiredSpace);
+
+    public double AvailableSpace => Capacity - OccupiedSpace;
+
     public Garage(string name, int capacity)
     {
         _name = name;
@@ -29,7 +34,7 @@ public class Garage<T> : IGarage where T : Vehicle
 
     public bool Park(Vehicle vehicle)
     {
-        if (_count >= _capacity)
+        if (vehicle.RequiredSpace > AvailableSpace) // (_count >= _capacity)
         {
             return false;
         }
