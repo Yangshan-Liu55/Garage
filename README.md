@@ -91,6 +91,7 @@ dotnet test
 ### Start
 
 ```text
+
 System data is automatically loaded from Data/autosave.json.
 
 ================ Garage Application ================
@@ -164,7 +165,7 @@ Choose: 3
 
 ========== Manage Vehicles ==========
 ***** Current Garage: T-central Garage *****
-***** Available spot(s): 250 *****
+***** Available spot(s): 45 *****
 
 1. Add Vehicle
 2. Remove Vehicle
@@ -181,7 +182,7 @@ The current garage is successfully initialized.
 
 ========== Manage Vehicles ==========
 ***** Current Garage: T-central Garage *****
-***** Available spot(s): 210.85 *****
+***** Available spot(s): 5.85 *****
 
 1. Add Vehicle
 2. Remove Vehicle
@@ -209,5 +210,26 @@ Total parked vehicles: 25
 Total occupied parking spots: 39.15
 Available parking spots: 5.85
 Garage capacity: 45
+
+```
+
+### Exit
+
+```text
+
+================ Garage Application ================
+***** Current Garage: T-central Garage *****
+***** Available spot(s): 5.85 *****
+
+1. Create Garage
+2. Select Garage
+3. Manage Vehicles
+4. Save System Data
+5. Load System Data
+0. Close
+
+Choose: 0
+
+System data is automatically saved to Data/autosave.json!
 
 ```
