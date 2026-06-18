@@ -14,6 +14,6 @@ public static class ConfigurationHelper
         _configuration["GarageSettings:DefaultCapacity"],
         out int value)
         ? value
-        : 200;
+        : 40;
 
 }

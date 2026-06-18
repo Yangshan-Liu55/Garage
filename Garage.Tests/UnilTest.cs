@@ -106,6 +106,29 @@ public class UnilTest
     }
 
     [Fact]
+    public void Park_GarageAvailableSpace_ShouldBeCalculated()
+    {
+        //Arrange
+        Garage<Vehicle> garage = new Garage<Vehicle>("General Garage", 3);
+
+        garage.Park(
+            new Bus("BCD123", "red", 4, 30)
+        );
+        garage.Park(
+            new Car("CDE123", "blue", 4, FuelType.Gasoline)
+        );
+
+        // Act
+        double actual = garage.AvailableSpace;
+        double occupiedSpace = garage.OccupiedSpace;
+
+        // Assert
+        Assert.Equal(3, garage.Capacity);
+        Assert.Equal(2.5, occupiedSpace);
+        Assert.Equal(0.5, actual);
+    }
+
+    [Fact]
     public void Park_ExistingRegNumber_ShouldReturnFalse()
     {
         //Arrange

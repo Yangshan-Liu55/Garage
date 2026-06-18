@@ -16,7 +16,7 @@ public class GarageHandler : IGarageHandler
 {
     private readonly GarageManager _garageManager;
 
-    private IGarage? CurrentGarage => _garageManager?.GetCurrentGarage();
+    public IGarage? CurrentGarage => _garageManager?.GetCurrentGarage();
 
     public double CurrentAvailableSpace => CurrentGarage?.AvailableSpace ?? 0;
 

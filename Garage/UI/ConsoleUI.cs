@@ -16,6 +16,7 @@ internal class ConsoleUI : IConsoleUI
     private readonly GarageManager _garageManager;
     private readonly GarageHandler _garageHandler;
     private readonly string dataFolder = "Data";
+    private static int DefaultCapacity = ConfigurationHelper.DefaultCapacity;
 
     public ConsoleUI()
     {
@@ -58,6 +59,7 @@ internal class ConsoleUI : IConsoleUI
             Console.WriteLine();
             Console.WriteLine($"System data is automatically saved to {filePath}!");
         }
+        Console.WriteLine();
     }
 
     private void PrintMenu(string title, List<MenuItem> items, bool printCurrentGarageName)
@@ -113,11 +115,11 @@ internal class ConsoleUI : IConsoleUI
                 }
                 else
                 {
-                    Console.WriteLine("Set Default Capacity for Garage?(Y/N): ");
+                    Console.WriteLine($"Set Default Capacity({DefaultCapacity}) for Garage?(Y/N): ");
                     string input = InputHelpers.ReadLine;
 
-                    int capacity = !string.IsNullOrEmpty(input) && input.ToUpper().Equals("Y") 
-                        ? ConfigurationHelper.DefaultCapacity 
+                    int capacity = !string.IsNullOrEmpty(input) && input.ToUpper().Equals("Y")
+                        ? DefaultCapacity
                         : InputHelpers.ReadInt("Enter capacity of garage: ");
 
                     IGarage garage = new Garage<Vehicle>(garageName, capacity);
@@ -704,6 +706,7 @@ Now you can go to Select Garage menu to select it."
         }
         sb.AppendLine("");
         sb.AppendLine($"Total parked vehicles: {stats.TotalParkedVehicles}");
+        sb.AppendLine($"Total occupied parking spots: {Math.Round(_garageHandler.CurrentGarage?.OccupiedSpace ?? 0, 2)}");
         sb.AppendLine($"Available parking spots: {Math.Round(_garageHandler.CurrentAvailableSpace, 2)}");
         sb.AppendLine($"Garage capacity: {stats.Capacity}");
 
