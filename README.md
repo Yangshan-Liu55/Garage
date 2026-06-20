@@ -91,11 +91,12 @@ dotnet test
 ### Start
 
 ```text
+
 System data is automatically loaded from Data/autosave.json.
 
 ================ Garage Application ================
-***** Current Garage: Garage 1 *****
-***** Available spot(s): 4.35 *****
+***** Current Garage: General Garage *****
+***** Available spot(s): 2.85 *****
 
 1. Create Garage
 2. Select Garage
@@ -107,17 +108,27 @@ System data is automatically loaded from Data/autosave.json.
 Choose: 1
 
 ========== Create A Garage ==========
-***** Current Garage: Garage 1 *****
-Garage name: T-central Garage
+***** Current Garage: General Garage *****
+Garage name: Hangar
+
+Vehicle Type options: 
+1. Car
+2. Motorcycle
+3. Bus
+4. Boat
+5. Airplane
+6. All
+
+Select a Vehicle Type: 5
 Set Default Capacity(45) for Garage?(Y/N): 
 y
 
-Garage is successfully created.
-Now you can go to Select Garage menu to select it.
+Garage is successfully created and selected as Current Garage.
+Now you can manage this garage through menu.
 
 ================ Garage Application ================
-***** Current Garage: Garage 1 *****
-***** Available spot(s): 4.35 *****
+***** Current Garage: Hangar *****
+***** Available spot(s): 45 *****
 
 1. Create Garage
 2. Select Garage
@@ -129,22 +140,19 @@ Now you can go to Select Garage menu to select it.
 Choose: 2
 
 ========== Select A Garage ==========
-***** Current Garage: Garage 1 *****
-***** Available spot(s): 4.35 *****
+***** Current Garage: Hangar *****
+***** Available spot(s): 45 *****
 
 1. General Garage
 2. Hangar
-3. Motorcykel Garage
-4. Garage 1
-5. T-central Garage
 0. Back
 
 
-Selct: 5
+Selct: 2
 The current garage is successfully changed!
 
 ================ Garage Application ================
-***** Current Garage: T-central Garage *****
+***** Current Garage: Hangar *****
 ***** Available spot(s): 45 *****
 
 1. Create Garage
@@ -154,7 +162,7 @@ The current garage is successfully changed!
 5. Load System Data
 0. Close
 
-Choose: 
+Choose:  
 ```
 
 ### Manage Vehicles
@@ -163,8 +171,8 @@ Choose:
 Choose: 3
 
 ========== Manage Vehicles ==========
-***** Current Garage: T-central Garage *****
-***** Available spot(s): 250 *****
+***** Current Garage: Hangar *****
+***** Available spot(s): 45 *****
 
 1. Add Vehicle
 2. Remove Vehicle
@@ -180,8 +188,8 @@ Choose: 7
 The current garage is successfully initialized.
 
 ========== Manage Vehicles ==========
-***** Current Garage: T-central Garage *****
-***** Available spot(s): 210.85 *****
+***** Current Garage: Hangar *****
+***** Available spot(s): 30 *****
 
 1. Add Vehicle
 2. Remove Vehicle
@@ -196,18 +204,14 @@ Choose: 6
 
 ===== Garage Statistics =====
 *** List vehicle types and how many of each are in the garage ***
-***** Current Garage: T-central Garage *****
+***** Current Garage: Hangar *****
 
 Parked vehicles: 
-Car: 5
-Motorcycle: 5
-Bus: 5
-Boat: 5
 Airplane: 5
 
-Total parked vehicles: 25
-Total occupied parking spots: 39.15
-Available parking spots: 5.85
+Total parked vehicles: 5
+Total occupied parking spots: 15
+Available parking spots: 30
 Garage capacity: 45
 
 ```

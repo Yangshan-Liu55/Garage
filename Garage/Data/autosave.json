@@ -1,5 +1,5 @@
 {
-  "CurrentGarageName": "General Garage",
+  "CurrentGarageName": "Hangar",
   "Garages": [
     {
       "Name": "General Garage",
@@ -270,6 +270,69 @@
           "NumberOfSeats": null,
           "Length": 2,
           "NumberOfEngines": null
+        }
+      ]
+    },
+    {
+      "Name": "Hangar",
+      "Capacity": 45,
+      "Count": 5,
+      "VehicleType": 5,
+      "Vehicles": [
+        {
+          "VehicleType": "Airplane",
+          "RegistrationNumber": "7Y3530",
+          "Color": "black",
+          "Wheels": 3,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": 1
+        },
+        {
+          "VehicleType": "Airplane",
+          "RegistrationNumber": "ZUL2MG",
+          "Color": "white",
+          "Wheels": 3,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": 2
+        },
+        {
+          "VehicleType": "Airplane",
+          "RegistrationNumber": "O3LMR8",
+          "Color": "black",
+          "Wheels": 3,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": 3
+        },
+        {
+          "VehicleType": "Airplane",
+          "RegistrationNumber": "R5STUC",
+          "Color": "red",
+          "Wheels": 3,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": 4
+        },
+        {
+          "VehicleType": "Airplane",
+          "RegistrationNumber": "46D7JR",
+          "Color": "white",
+          "Wheels": 3,
+          "FuelType": null,
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": 1
         }
       ]
     }
