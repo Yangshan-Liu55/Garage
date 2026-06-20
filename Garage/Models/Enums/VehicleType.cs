@@ -6,5 +6,6 @@ public enum VehicleType
     Motorcycle = 2,
     Bus = 3,
     Boat = 4,
-    Airplane = 5
+    Airplane = 5,
+    Vehicle = 6 // All
 }

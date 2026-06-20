@@ -4,7 +4,7 @@
     {
       "Name": "General Garage",
       "Capacity": 39,
-      "Count": 24,
+      "Count": 25,
       "VehicleType": 6,
       "Vehicles": [
         {
@@ -269,6 +269,58 @@
           "CylinderVolume": null,
           "NumberOfSeats": null,
           "Length": 2,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Car",
+          "RegistrationNumber": "BCD123",
+          "Color": "red",
+          "Wheels": 4,
+          "FuelType": "Diesel",
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        }
+      ]
+    },
+    {
+      "Name": "Car Garage",
+      "Capacity": 3,
+      "Count": 3,
+      "VehicleType": 1,
+      "Vehicles": [
+        {
+          "VehicleType": "Car",
+          "RegistrationNumber": "1WK9AJ",
+          "Color": "black",
+          "Wheels": 4,
+          "FuelType": "Gasoline",
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Car",
+          "RegistrationNumber": "Z17DMI",
+          "Color": "red",
+          "Wheels": 4,
+          "FuelType": "Diesel",
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Car",
+          "RegistrationNumber": "ABC123",
+          "Color": "white",
+          "Wheels": 4,
+          "FuelType": "Gasoline",
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
           "NumberOfEngines": null
         }
       ]

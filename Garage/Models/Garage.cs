@@ -7,16 +7,18 @@ using Garage.Models.Enums;
 
 namespace Garage.Models;
 
-public class Garage<T> : IGarage where T : Vehicle
+public class Garage<T> : IVehicleGarage<T> where T : Vehicle
 {
-    private readonly Vehicle?[] _vehicles;
+    private readonly T?[] _vehicles;
     private readonly string _name = "Garage";
     private readonly int _capacity;
     private readonly Dictionary<string, int> _regNumberIndex;
+    private readonly VehicleType _vehicleType;
     private int _count;
 
     public string Name { get => _name; }
     public int Capacity { get => _capacity; }
+    public VehicleType VehicleType { get => _vehicleType; }
     public int Count { get => _count; }
 
     public double OccupiedSpace => this.Sum(v => v.RequiredSpace);
@@ -27,14 +29,29 @@ public class Garage<T> : IGarage where T : Vehicle
     {
         _name = name;
         _capacity = capacity;
+        _vehicleType = VehicleType.Vehicle;
+
         _vehicles = new T[capacity];
         _count = 0;
         _regNumberIndex = new Dictionary<string, int>();
     }
 
-    public bool Park(Vehicle vehicle)
+    public Garage(string name, int capacity, VehicleType vehicleType)
     {
-        if (vehicle.RequiredSpace > AvailableSpace) // (_count >= _capacity)
+        _name = name;
+        _capacity = capacity;
+        _vehicleType = vehicleType;
+
+        _vehicles = new T[capacity];
+        _count = 0;
+        _regNumberIndex = new Dictionary<string, int>();
+    }
+
+    public bool Park(T vehicle)
+    {
+        if (!(Enum.Equals(VehicleType, VehicleType.Vehicle)
+                || Enum.Equals(VehicleType, vehicle.VehicleType))
+            && vehicle.RequiredSpace <= AvailableSpace) // (_count >= _capacity)
         {
             return false;
         }
@@ -90,7 +107,7 @@ public class Garage<T> : IGarage where T : Vehicle
         }
     }
 
-    public Vehicle? FindByRegNumber(string regNumber)
+    public T? FindByRegNumber(string regNumber)
     {
         try
         {
@@ -109,7 +126,7 @@ public class Garage<T> : IGarage where T : Vehicle
         }
     }
 
-    public IEnumerator<Vehicle> GetEnumerator()
+    public IEnumerator<T> GetEnumerator()
     {
         foreach (T? vehicle in _vehicles)
         {

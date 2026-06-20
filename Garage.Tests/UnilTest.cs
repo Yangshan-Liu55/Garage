@@ -4,6 +4,8 @@ using Garage.Models;
 using Garage.Interfaces;
 using Garage.Models.Vehicles;
 using Garage.Models.Enums;
+using Garage.Data;
+using Garage.Factories;
 
 namespace Garage.Tests;
 
@@ -162,6 +164,40 @@ public class UnilTest
 
         // Assert
         Assert.False(actual);
+    }
+
+    [Theory]
+    [MemberData(nameof(MockData.MockCars), MemberType = typeof(MockData))]
+    public void Park_Cars_ShouldReturnTrue(Car car)
+    {
+        //Arrange
+        IVehicleGarage<Vehicle> garage = new Garage<Vehicle>("General Garage", 5);
+        IVehicleGarage<Car> garage2 = new Garage<Car>("General Garage", 5, VehicleType.Car);
+
+        // Act
+        bool actual = garage.Park(car);
+        bool actual2 = garage2.Park(car);
+
+        // Assert
+        Assert.True(actual);
+        Assert.True(actual2);
+    }
+
+    [Theory]
+    [MemberData(nameof(MockData.MockCars), MemberType = typeof(MockData))]
+    public void Park_CarsUsingFactory_ShouldReturnTrue(Vehicle vehicle)
+    {
+        //Arrange
+        IGarage garage = GarageFactory.CreateGarage("General Garage", 5, VehicleType.Vehicle);
+        IGarage garage2 = GarageFactory.CreateGarage("Car Garage", 5, VehicleType.Car);
+
+        // Act
+        bool actual = VehicleFactory.Park(garage, vehicle);
+        bool actual2 = VehicleFactory.Park(garage2, vehicle);
+
+        // Assert
+        Assert.True(actual);
+        Assert.True(actual2);
     }
 
     [Theory]
