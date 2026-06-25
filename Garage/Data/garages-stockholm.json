@@ -1,10 +1,10 @@
 {
-  "CurrentGarageName": "Hangar",
+  "CurrentGarageName": "General Garage",
   "Garages": [
     {
       "Name": "General Garage",
       "Capacity": 39,
-      "Count": 24,
+      "Count": 25,
       "VehicleType": 6,
       "Vehicles": [
         {
@@ -270,69 +270,58 @@
           "NumberOfSeats": null,
           "Length": 2,
           "NumberOfEngines": null
+        },
+        {
+          "VehicleType": "Car",
+          "RegistrationNumber": "BCD123",
+          "Color": "red",
+          "Wheels": 4,
+          "FuelType": "Diesel",
+          "CylinderVolume": null,
+          "NumberOfSeats": null,
+          "Length": null,
+          "NumberOfEngines": null
         }
       ]
     },
     {
-      "Name": "Hangar",
-      "Capacity": 45,
-      "Count": 5,
-      "VehicleType": 5,
+      "Name": "Car Garage",
+      "Capacity": 3,
+      "Count": 3,
+      "VehicleType": 1,
       "Vehicles": [
         {
-          "VehicleType": "Airplane",
-          "RegistrationNumber": "7Y3530",
+          "VehicleType": "Car",
+          "RegistrationNumber": "1WK9AJ",
           "Color": "black",
-          "Wheels": 3,
-          "FuelType": null,
+          "Wheels": 4,
+          "FuelType": "Gasoline",
           "CylinderVolume": null,
           "NumberOfSeats": null,
           "Length": null,
-          "NumberOfEngines": 1
+          "NumberOfEngines": null
         },
         {
-          "VehicleType": "Airplane",
-          "RegistrationNumber": "ZUL2MG",
-          "Color": "white",
-          "Wheels": 3,
-          "FuelType": null,
-          "CylinderVolume": null,
-          "NumberOfSeats": null,
-          "Length": null,
-          "NumberOfEngines": 2
-        },
-        {
-          "VehicleType": "Airplane",
-          "RegistrationNumber": "O3LMR8",
-          "Color": "black",
-          "Wheels": 3,
-          "FuelType": null,
-          "CylinderVolume": null,
-          "NumberOfSeats": null,
-          "Length": null,
-          "NumberOfEngines": 3
-        },
-        {
-          "VehicleType": "Airplane",
-          "RegistrationNumber": "R5STUC",
+          "VehicleType": "Car",
+          "RegistrationNumber": "Z17DMI",
           "Color": "red",
-          "Wheels": 3,
-          "FuelType": null,
+          "Wheels": 4,
+          "FuelType": "Diesel",
           "CylinderVolume": null,
           "NumberOfSeats": null,
           "Length": null,
-          "NumberOfEngines": 4
+          "NumberOfEngines": null
         },
         {
-          "VehicleType": "Airplane",
-          "RegistrationNumber": "46D7JR",
+          "VehicleType": "Car",
+          "RegistrationNumber": "ABC123",
           "Color": "white",
-          "Wheels": 3,
-          "FuelType": null,
+          "Wheels": 4,
+          "FuelType": "Gasoline",
           "CylinderVolume": null,
           "NumberOfSeats": null,
           "Length": null,
-          "NumberOfEngines": 1
+          "NumberOfEngines": null
         }
       ]
     }

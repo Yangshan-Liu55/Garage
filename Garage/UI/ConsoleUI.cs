@@ -17,6 +17,7 @@ internal class ConsoleUI : IConsoleUI
     private readonly GarageHandler _garageHandler;
     private readonly string dataFolder = "Data";
     private static int DefaultCapacity = ConfigurationHelper.DefaultCapacity;
+    private IGarage? CurrentGarage => _garageManager?.CurrentGarage;
 
     public ConsoleUI()
     {
@@ -46,7 +47,7 @@ internal class ConsoleUI : IConsoleUI
 
         Console.WriteLine();
         Console.WriteLine(success ? $"System data is automatically loaded from {filePath}."
-            : $"Faild loading data automatically. File {filePath} is not existing.");
+            : $"Garage App is clean. Now you can start to manage your garage!");
     }
 
     private void Exit()
@@ -103,34 +104,7 @@ internal class ConsoleUI : IConsoleUI
         switch (choice)
         {
             case MenuConstants.CreateGarage:
-                Console.WriteLine();
-                Console.WriteLine(MenuConstants.CreateGarageTitle);
-                Console.WriteLine($"***** Current Garage: {_garageManager.CurrentGarageName} *****");
-
-                string garageName = InputHelpers.ReadString("Garage name: ");
-
-                if (_garageManager.IsGarageExisting(garageName))
-                {
-                    Console.WriteLine("Garage is already existing!");
-                }
-                else
-                {
-                    Console.WriteLine($"Set Default Capacity({DefaultCapacity}) for Garage?(Y/N): ");
-                    string input = InputHelpers.ReadLine;
-
-                    int capacity = !string.IsNullOrEmpty(input) && input.ToUpper().Equals("Y")
-                        ? DefaultCapacity
-                        : InputHelpers.ReadInt("Enter capacity of garage: ");
-
-                    IGarage garage = new Garage<Vehicle>(garageName, capacity);
-                    bool success = _garageManager.AddGarage(garage);
-
-                    Console.WriteLine();
-                    Console.WriteLine(success
-                        ? @"Garage is successfully created.
-Now you can go to Select Garage menu to select it."
-                        : "Failed to create a garage. Garage is already existing!");
-                }
+                CreateGarage();
                 break;
             case MenuConstants.SelectGarage:
                 SelectGarage();
@@ -152,6 +126,57 @@ Now you can go to Select Garage menu to select it."
                 break;
         }
         return false;
+    }
+
+    private void CreateGarage()
+    {
+        Console.WriteLine();
+        Console.WriteLine(MenuConstants.CreateGarageTitle);
+        Console.WriteLine($"***** Current Garage: {_garageManager.CurrentGarageName} *****");
+
+        string garageName = InputHelpers.ReadString("Garage name: ");
+
+        if (_garageManager.IsGarageExisting(garageName))
+        {
+            Console.WriteLine("Garage is already existing!");
+            return;
+        }
+
+        VehicleType vehicleType = ChooseAVehicleType();
+
+        Console.WriteLine($"Set Default Capacity({DefaultCapacity}) for Garage?(Y/N): ");
+        string input = InputHelpers.ReadLine;
+
+        int capacity = !string.IsNullOrEmpty(input) && input.ToUpper().Equals("Y")
+            ? DefaultCapacity
+            : InputHelpers.ReadInt("Enter capacity of garage: ");
+
+        bool success = _garageManager.CreateGarage(garageName, capacity, vehicleType);
+        /* IGarage garage = new Garage<Vehicle>(garageName, capacity, vehicleType);
+        bool success = _garageManager.AddGarage(garage); */
+
+        Console.WriteLine();
+        Console.WriteLine(success
+            ? @"Garage is successfully created and selected as Current Garage.
+Now you can manage this garage through menu."
+            : "Failed to create a garage. Garage is already existing!");
+    }
+
+    private VehicleType ChooseAVehicleType()
+    {
+        PrintMenu("Vehicle Type options: ", MenuConstants.VehicleTypes, false);
+
+        Console.Write("Select a Vehicle Type: ");
+        string str = InputHelpers.ReadLine;
+        VehicleType type;
+        if (!Enum.TryParse(str, out type)
+            || !Enum.IsDefined(typeof(VehicleType), type))
+        {
+            InvalidChoice();
+            ChooseAVehicleType();
+        }
+
+        return type;
     }
 
     private void InvalidChoice()
@@ -290,13 +315,18 @@ Now you can go to Select Garage menu to select it."
     {
         List<MenuItem> items = new List<MenuItem>();
         double availableSpace = _garageHandler.CurrentAvailableSpace;
+        VehicleType garageType = _garageManager.CurrentGarageType;
 
         foreach (VehicleType type in Enum.GetValues(typeof(VehicleType)))
         {
-            if (GarageConstants.VehicleRequiredSpace[type] <= availableSpace)
+            if (!Enum.Equals(type, VehicleType.Vehicle)
+                && (Enum.Equals(garageType, VehicleType.Vehicle)
+                || Enum.Equals(garageType, type))
+                && GarageConstants.VehicleRequiredSpace[type] <= availableSpace)
             {
                 items.Add(
-                    new MenuItem(type.ToString("d"), "Add " + type.ToString())
+                    new MenuItem(type.ToString("d"), "Add " + type.ToString()
+                    + (Enum.Equals(type, VehicleType.Vehicle) ? " (Can park all types)" : ""))
                 );
             }
         }
@@ -314,10 +344,9 @@ Now you can go to Select Garage menu to select it."
         string choice = InputHelpers.ReadString("Choose: ");
         bool success = false;
 
-        if (int.TryParse(choice, out int result)
-            && Enum.IsDefined(typeof(VehicleType), result))
+        if (Enum.TryParse(choice, out VehicleType vehicleType)
+            && Enum.IsDefined(typeof(VehicleType), vehicleType))
         {
-            VehicleType vehicleType = (VehicleType)result;
             string regNumber = ReadRegNumber();
             string color = InputHelpers.ReadString("Color: ").ToLower();
 
@@ -326,45 +355,29 @@ Now you can go to Select Garage menu to select it."
                 case VehicleType.Car:
                     FuelType fuelType = ChooseFuelType();
 
-                    Car car = new Car(regNumber, color, 4, fuelType);
-
-                    success = _garageHandler.AddVehicle(car);
-
+                    success = _garageHandler.AddVehicle(new Car(regNumber, color, 4, fuelType));
                     break;
                 case VehicleType.Motorcycle:
                     int cylinderVolume = InputHelpers.ReadInt("Enter cylinder volumn: ");
 
-                    Motorcycle motorcycle = new Motorcycle(regNumber, color, 2, cylinderVolume);
-
-                    success = _garageHandler.AddVehicle(motorcycle);
-
+                    success = _garageHandler.AddVehicle(new Motorcycle(regNumber, color, 2, cylinderVolume));
                     break;
                 case VehicleType.Bus:
                     int numberOfSeats = InputHelpers.ReadInt("Enter number of seats: ");
 
-                    Bus bus = new Bus(regNumber, color, 4, numberOfSeats);
-
-                    success = _garageHandler.AddVehicle(bus);
-
+                    success = _garageHandler.AddVehicle(new Bus(regNumber, color, 4, numberOfSeats));
                     break;
                 case VehicleType.Boat:
                     double length = InputHelpers.ReadInt("Enter length: ");
 
-                    Boat boat = new Boat(regNumber, color, 0, length);
-
-                    success = _garageHandler.AddVehicle(boat);
-
+                    success = _garageHandler.AddVehicle(new Boat(regNumber, color, 0, length));
                     break;
                 case VehicleType.Airplane:
                     int numberOfEngines = InputHelpers.ReadInt("Enter number of engines: ");
 
-                    Airplane airplane = new Airplane(regNumber, color, 4, numberOfEngines);
-
-                    success = _garageHandler.AddVehicle(airplane);
-
+                    success = _garageHandler.AddVehicle(new Airplane(regNumber, color, 4, numberOfEngines));
                     break;
                 default:
-                    success = false;
 
                     break;
             }
@@ -523,13 +536,10 @@ Now you can go to Select Garage menu to select it."
 
         foreach (string str in array)
         {
-            if (Enum.TryParse(str.Trim(), out VehicleType type))
+            if (Enum.TryParse(str.Trim(), out VehicleType type)
+                && Enum.IsDefined(typeof(VehicleType), type))
             {
-                if (Enum.IsDefined(typeof(VehicleType), type))
-                {
-                    criteria.VehicleTypes.Add(type);
-                }
-
+                criteria.VehicleTypes.Add(type);
             }
         }
 
@@ -706,7 +716,7 @@ Now you can go to Select Garage menu to select it."
         }
         sb.AppendLine("");
         sb.AppendLine($"Total parked vehicles: {stats.TotalParkedVehicles}");
-        sb.AppendLine($"Total occupied parking spots: {Math.Round(_garageHandler.CurrentGarage?.OccupiedSpace ?? 0, 2)}");
+        sb.AppendLine($"Total occupied parking spots: {Math.Round(_garageHandler.CurrentOccupiedSpace, 2)}");
         sb.AppendLine($"Available parking spots: {Math.Round(_garageHandler.CurrentAvailableSpace, 2)}");
         sb.AppendLine($"Garage capacity: {stats.Capacity}");
 

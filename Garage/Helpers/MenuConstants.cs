@@ -72,6 +72,6 @@ public class MenuConstants
         new MenuItem(VehicleType.Bus.ToString("d"), VehicleType.Bus.ToString()),
         new MenuItem(VehicleType.Boat.ToString("d"), VehicleType.Boat.ToString()),
         new MenuItem(VehicleType.Airplane.ToString("d"), VehicleType.Airplane.ToString()),
-        new MenuItem(All, "All")
+        new MenuItem(VehicleType.Vehicle.ToString("d"), "All")
     };
 }

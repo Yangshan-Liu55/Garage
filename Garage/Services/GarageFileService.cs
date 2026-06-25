@@ -1,15 +1,19 @@
 using System.Text.Json;
+
 using Garage.Models.DTOs;
 using Garage.Models.Vehicles;
 using Garage.Interfaces;
 using Garage.Managers;
 using Garage.Models.Enums;
+using Garage.Handlers;
+using Garage.Factories;
 
 namespace Garage.Services;
 
 public static class GarageFileService
 {
-    public static void SaveGarages(string filePath, GarageManager garageManager)
+    public static void SaveGarages(string filePath, 
+        GarageManager garageManager)
     {
         GarageAppData data = new();
 
@@ -22,7 +26,10 @@ public static class GarageFileService
                 Name = garage.Name,
                 Capacity = garage.Capacity,
                 Count = garage.Count,
-                Vehicles = garage.Select(ConvertVehicle).ToList()
+                VehicleType = garage.VehicleType,
+                Vehicles = VehicleFactory.GetAllVehicles(garage)?
+                    .Select(v => ConvertVehicle(v)).ToList()
+                    ?? []
             };
 
             data.Garages.Add(garageData);
@@ -87,6 +94,50 @@ public static class GarageFileService
         }
 
         return data;
+    }
+
+    public static Vehicle? ConvertVehicleData(VehicleData data)
+    {
+        switch (data.VehicleType)
+        {
+            case nameof(Car):
+                return new Car(
+                        data.RegistrationNumber,
+                        data.Color,
+                        data.Wheels,
+                        Enum.Parse<FuelType>(data.FuelType!)
+                    );
+            case nameof(Motorcycle):
+                return new Motorcycle(
+                        data.RegistrationNumber,
+                        data.Color,
+                        data.Wheels,
+                        data.CylinderVolume ?? 0
+                    );
+            case nameof(Bus):
+                return new Bus(
+                    data.RegistrationNumber,
+                    data.Color,
+                    data.Wheels,
+                    data.NumberOfSeats ?? 0
+                );
+            case nameof(Boat):
+                return new Boat(
+                    data.RegistrationNumber,
+                    data.Color,
+                    data.Wheels,
+                    data.Length ?? 0
+                );
+            case nameof(Airplane):
+                return new Airplane(
+                    data.RegistrationNumber,
+                    data.Color,
+                    data.Wheels,
+                    data.NumberOfEngines ?? 0
+                );
+            default:
+                return null;
+        }
     }
 
 }

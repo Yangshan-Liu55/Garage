@@ -1,4 +1,6 @@
 using Garage.Interfaces;
+using Garage.Factories;
+using Garage.Models.Enums;
 
 namespace Garage.Managers;
 
@@ -10,9 +12,24 @@ public class GarageManager
 
     public string? CurrentGarageName { get; set; }
 
+    public IGarage? CurrentGarage { get => 
+            (!string.IsNullOrWhiteSpace(CurrentGarageName)
+            && _garages.TryGetValue(CurrentGarageName, out var garage))
+        ? garage
+        : null;
+        }
+    public VehicleType CurrentGarageType { get => CurrentGarage?.VehicleType ?? VehicleType.Vehicle; }
+
     public GarageManager()
     {
         _garages = new Dictionary<string, IGarage>();
+    }
+
+    public bool CreateGarage(string name, int capacity, VehicleType vehicleType)
+    {
+        IGarage garage = GarageFactory.CreateGarage(name, capacity, vehicleType);
+
+        return AddGarage(garage);
     }
 
     public bool AddGarage(IGarage garage)
@@ -24,10 +41,11 @@ public class GarageManager
 
         _garages.Add(garage.Name, garage);
 
-        if (string.IsNullOrWhiteSpace(CurrentGarageName))
+        CurrentGarageName = garage.Name;
+        /* if (string.IsNullOrWhiteSpace(CurrentGarageName))
         {
             CurrentGarageName = garage.Name;
-        }
+        } */
 
         return true;
     }
@@ -51,16 +69,6 @@ public class GarageManager
     public bool IsGarageExisting(string name)
     {
         return _garages.ContainsKey(name);
-    }
-
-    public IGarage? GetCurrentGarage()
-    {
-        if (!string.IsNullOrWhiteSpace(CurrentGarageName)
-            && _garages.TryGetValue(CurrentGarageName, out var garage))
-        {
-            return garage;
-        }
-        return null;
     }
 
     public void Clear()
